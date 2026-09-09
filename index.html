@@ -3,78 +3,457 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lumina Store</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Lumina Store - Carteira & Sistema de Recarga/Saque</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #0f0f12; color: #f0f0f0; padding-bottom: 75px; }
+
+        /* Top Bar */
+        .top-bar {
+            background: linear-gradient(135deg, #18181f, #22222a);
+            color: #d4af37;
+            text-align: center;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #2a2a35;
+        }
+
+        /* Wallet Card Header */
+        .wallet-card {
+            background: linear-gradient(135deg, #1e1e28, #2a2a3a);
+            margin: 15px;
+            padding: 20px;
+            border-radius: 14px;
+            border: 1px solid #d4af37;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15);
+            text-align: center;
+        }
+
+        .wallet-title { font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
+        .wallet-balance { font-size: 2rem; color: #2ecc71; font-weight: bold; margin: 8px 0; }
+        
+        .wallet-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-wallet {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .btn-recharge { background: #d4af37; color: #121212; }
+        .btn-withdraw { background: #2a2a38; color: #d4af37; border: 1px solid #d4af37; }
+
+        /* Products Section */
+        .section-title { padding: 0 15px 10px; font-size: 1rem; color: #ddd; }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 0 15px;
+        }
+
+        .product-card {
+            background: #181822;
+            border: 1px solid #2a2a38;
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-img {
+            width: 100%;
+            height: 110px;
+            object-fit: contain;
+            background: #22222f;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .product-name { font-size: 0.85rem; font-weight: 600; color: #fff; margin-bottom: 4px; }
+        .product-price { font-size: 0.95rem; color: #2ecc71; font-weight: bold; margin-bottom: 8px; }
+
+        .btn-buy-balance {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.75rem;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .modal-content {
+            background: #181822;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            border-top: 2px solid #d4af37;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .modal-title { color: #d4af37; font-size: 1.1rem; }
+        .close-btn { color: #888; font-size: 1.5rem; cursor: pointer; }
+
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            background: #22222f;
+            border: 1px solid #333345;
+            border-radius: 8px;
+            color: white;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .fee-info {
+            background: #22222f;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-bottom: 15px;
+        }
+
+        .fee-info span { color: #e74c3c; font-weight: bold; }
+
+        .btn-confirm {
+            width: 100%;
+            padding: 14px;
+            background: #d4af37;
+            color: #121212;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: 60px;
+            background: #181822;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #2a2a38;
+            z-index: 999;
+        }
+
+        .nav-btn {
+            background: none; border: none;
+            color: #777; font-size: 0.75rem;
+            display: flex; flex-direction: column; align-items: center;
+            cursor: pointer;
+        }
+
+        .nav-btn i { font-size: 1.2rem; margin-bottom: 3px; }
+        .nav-btn.active { color: #d4af37; font-weight: bold; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .history-item {
+            background: #181822;
+            padding: 12px;
+            margin: 10px 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #2ecc71;
+        }
+
+        .history-item.withdraw { border-left-color: #e74c3c; }
+    </style>
 </head>
 <body>
 
     <header class="top-bar">
-        <span>Lumina Store</span>
+        <span>Lumina Store - Carteira & Loja</span>
     </header>
 
-    <main id="tab-produtos" class="tab-content active">
-        <div class="banner-container">
-            <div class="banner-card">
-                <h1>Bolsas & Acessórios de Luxo</h1>
-                <p>Qualidade, elegância e entregas rápidas</p>
+    <main id="tab-loja" class="tab-content active">
+        <div class="wallet-card">
+            <div class="wallet-title">Saldo Disponível</div>
+            <div class="wallet-balance" id="user-balance">0.00 MT</div>
+            <div class="wallet-actions">
+                <button class="btn-wallet btn-recharge" onclick="openModal('modal-recharge')">
+                    <i class="fas fa-plus-circle"></i> Recarregar
+                </button>
+                <button class="btn-wallet btn-withdraw" onclick="openModal('modal-withdraw')">
+                    <i class="fas fa-arrow-alt-circle-down"></i> Sacar
+                </button>
             </div>
         </div>
 
-        <div class="quick-actions">
-            <a href="https://wa.me/258840000000" target="_blank" class="action-btn">
-                <i class="fab fa-whatsapp"></i>
-                <span>Atendimento</span>
-            </a>
-            <a href="#" class="action-btn">
-                <i class="fas fa-truck"></i>
-                <span>Entregas</span>
-            </a>
-            <a href="#" class="action-btn">
-                <i class="fas fa-star"></i>
-                <span>Grupo VIP</span>
-            </a>
-        </div>
+        <h3 class="section-title">Nossos Produtos</h3>
 
-        <section class="products-grid" id="products-grid"></section>
-    </main>
+        <div class="products-grid">
+            <div class="product-card">
+                <img src="https://via.placeholder.com/150/1a1a1a/d4af37?text=Bolsa+Noir" class="product-img">
+                <div class="product-name">Bolsa Clássica Noir</div>
+                <div class="product-price">1,500 MT</div>
+                <button class="btn-buy-balance" onclick="buyWithBalance('Bolsa Clássica Noir', 1500)">
+                    Comprar com Saldo
+                </button>
+            </div>
 
-    <main id="tab-pedidos" class="tab-content">
-        <header class="sub-header">
-            <h3>Meus Pedidos</h3>
-        </header>
-        <div class="orders-list">
-            <p class="empty-msg">Nenhum pedido realizado ainda.</p>
+            <div class="product-card">
+                <img src="https://via.placeholder.com/150/1a1a1a/d4af37?text=Anel+Dourado" class="product-img">
+                <div class="product-name">Anel Solitário Dourado</div>
+                <div class="product-price">450 MT</div>
+                <button class="btn-buy-balance" onclick="buyWithBalance('Anel Solitário Dourado', 450)">
+                    Comprar com Saldo
+                </button>
+            </div>
         </div>
     </main>
 
-    <main id="tab-conta" class="tab-content">
-        <header class="sub-header">
-            <h3>Minha Conta</h3>
-        </header>
-        <div class="user-menu">
-            <div class="menu-item"><i class="fas fa-headset"></i> Atendimento ao Cliente</div>
-            <div class="menu-item"><i class="fas fa-shield-alt"></i> Políticas da Loja</div>
-            <div class="menu-item"><i class="fas fa-info-circle"></i> Sobre Nós</div>
+    <main id="tab-historico" class="tab-content">
+        <h3 class="section-title" style="margin-top:15px;">Histórico de Transações</h3>
+        <div id="history-list">
+            <div class="history-item">
+                <div>
+                    <strong>Bónus Inicial</strong><br>
+                    <small>Boas-vindas</small>
+                </div>
+                <span style="color:#2ecc71; font-weight:bold;">+0.00 MT</span>
+            </div>
         </div>
     </main>
+
+    <div class="modal" id="modal-recharge">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-mobile-alt"></i> Recarregar Carteira</h3>
+                <span class="close-btn" onclick="closeModal('modal-recharge')">&times;</span>
+            </div>
+            <div class="input-group">
+                <label>Método de Pagamento</label>
+                <select id="recharge-method">
+                    <option value="mpesa">M-Pesa (Vodacom)</option>
+                    <option value="emola">e-Mola (Movitel)</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Número de Telefone</label>
+                <input type="tel" id="recharge-phone" placeholder="841234567 / 861234567">
+            </div>
+            <div class="input-group">
+                <label>Valor da Recarga (MT)</label>
+                <input type="number" id="recharge-amount" placeholder="Ex: 500">
+            </div>
+            <button class="btn-confirm" onclick="processRecharge()">Confirmar Recarga</button>
+        </div>
+    </div>
+
+    <div class="modal" id="modal-withdraw">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-wallet"></i> Solicitar Saque</h3>
+                <span class="close-btn" onclick="closeModal('modal-withdraw')">&times;</span>
+            </div>
+            <div class="input-group">
+                <label>Receber Via</label>
+                <select id="withdraw-method">
+                    <option value="mpesa">M-Pesa</option>
+                    <option value="emola">e-Mola</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Número de Destino</label>
+                <input type="tel" id="withdraw-phone" placeholder="841234567">
+            </div>
+            <div class="input-group">
+                <label>Valor do Saque (MT)</label>
+                <input type="number" id="withdraw-amount" placeholder="Ex: 1000" oninput="calculateWithdrawFee()">
+            </div>
+            <div class="fee-info">
+                Taxa de Saque (5%): <span id="fee-value">0.00 MT</span><br>
+                Valor Líquido a Receber: <strong id="net-value" style="color:#2ecc71;">0.00 MT</strong>
+            </div>
+            <button class="btn-confirm" onclick="processWithdraw()">Solicitar Saque</button>
+        </div>
+    </div>
 
     <nav class="bottom-nav">
-        <button class="nav-btn active" onclick="switchTab('produtos', this)">
+        <button class="nav-btn active" onclick="switchTab('loja', this)">
             <i class="fas fa-store"></i>
-            <span>Produtos</span>
+            <span>Loja</span>
         </button>
-        <button class="nav-btn" onclick="switchTab('pedidos', this)">
-            <i class="fas fa-shopping-bag"></i>
-            <span>Meus Pedidos</span>
-        </button>
-        <button class="nav-btn" onclick="switchTab('conta', this)">
-            <i class="fas fa-user"></i>
-            <span>Minha Conta</span>
+        <button class="nav-btn" onclick="switchTab('historico', this)">
+            <i class="fas fa-history"></i>
+            <span>Histórico</span>
         </button>
     </nav>
 
-    <script src="products.js"></script>
-    <script src="app.js"></script>
+    <script>
+        let userBalance = 0.00;
+        const WITHDRAW_FEE_PERCENT = 0.05;
+
+        function updateBalanceDisplay() {
+            document.getElementById('user-balance').innerText = userBalance.toFixed(2) + ' MT';
+        }
+
+        function openModal(id) {
+            document.getElementById(id).style.display = 'flex';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        function processRecharge() {
+            const phone = document.getElementById('recharge-phone').value;
+            const amount = parseFloat(document.getElementById('recharge-amount').value);
+
+            if (!phone || isNaN(amount) || amount <= 0) {
+                alert('Por favor, preencha o número e o valor da recarga corretamente.');
+                return;
+            }
+
+            alert('Enviando pedido de pagamento M-Pesa para o número ' + phone + '... Verifique a notificação no seu celular para introduzir o PIN.');
+
+            setTimeout(() => {
+                userBalance += amount;
+                updateBalanceDisplay();
+                addHistory('Recarga M-Pesa', amount, true);
+                closeModal('modal-recharge');
+                alert('Recarga realizada com sucesso! Novo saldo: ' + userBalance.toFixed(2) + ' MT');
+            }, 1500);
+        }
+
+        function calculateWithdrawFee() {
+            const amount = parseFloat(document.getElementById('withdraw-amount').value) || 0;
+            const fee = amount * WITHDRAW_FEE_PERCENT;
+            const net = amount - fee;
+
+            document.getElementById('fee-value').innerText = fee.toFixed(2) + ' MT';
+            document.getElementById('net-value').innerText = (net > 0 ? net.toFixed(2) : '0.00') + ' MT';
+        }
+
+        function processWithdraw() {
+            const phone = document.getElementById('withdraw-phone').value;
+            const amount = parseFloat(document.getElementById('withdraw-amount').value);
+
+            if (!phone || isNaN(amount) || amount <= 0) {
+                alert('Preencha os dados do saque.');
+                return;
+            }
+
+            if (amount > userBalance) {
+                alert('Saldo insuficiente! Seu saldo atual é: ' + userBalance.toFixed(2) + ' MT');
+                return;
+            }
+
+            const fee = amount * WITHDRAW_FEE_PERCENT;
+            const netAmount = amount - fee;
+
+            userBalance -= amount;
+            updateBalanceDisplay();
+            addHistory('Saque Solicitado (' + phone + ')', amount, false);
+            closeModal('modal-withdraw');
+
+            alert('Saque solicitado com sucesso!\nValor solicitado: ' + amount.toFixed(2) + ' MT\nTaxa (' + (WITHDRAW_FEE_PERCENT*100) + '%): ' + fee.toFixed(2) + ' MT\nValor a transferir para o M-Pesa: ' + netAmount.toFixed(2) + ' MT');
+        }
+
+        function buyWithBalance(productName, price) {
+            if (userBalance < price) {
+                alert('Saldo insuficiente para comprar ' + productName + '. Faça uma recarga!');
+                openModal('modal-recharge');
+                return;
+            }
+
+            userBalance -= price;
+            updateBalanceDisplay();
+            addHistory('Compra: ' + productName, price, false);
+            alert('Compra efetuada com sucesso usando o seu saldo interno!');
+        }
+
+        function addHistory(title, amount, isIncome) {
+            const historyList = document.getElementById('history-list');
+            const item = document.createElement('div');
+            item.className = 'history-item ' + (isIncome ? '' : 'withdraw');
+            item.innerHTML = `
+                <div>
+                    <strong>${title}</strong><br>
+                    <small>${new Date().toLocaleTimeString()}</small>
+                </div>
+                <span style="color:${isIncome ? '#2ecc71' : '#e74c3c'}; font-weight:bold;">
+                    ${isIncome ? '+' : '-'}${amount.toFixed(2)} MT
+                </span>
+            `;
+            historyList.prepend(item);
+        }
+    </script>
 </body>
-</html>
+    </html>
