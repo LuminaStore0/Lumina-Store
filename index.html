@@ -3,63 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minha Loja Virtual</title>
+    <title>Lumina Store</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <header class="navbar">
-        <div class="logo">
-            <h2>Loja Virtual</h2>
-        </div>
-        <div class="header-actions">
-            <a href="https://chat.whatsapp.com/SEU_LINK_DO_GRUPO" target="_blank" class="whatsapp-group-btn">
-                <i class="fab fa-whatsapp"></i> Grupo de Entregas
-            </a>
-            <div class="cart-icon" id="cart-btn">
-                <i class="fas fa-shopping-bag"></i>
-                <span id="cart-count">0</span>
-            </div>
-        </div>
+
+    <header class="top-bar">
+        <span>Lumina Store</span>
     </header>
 
-    <section class="hero">
-        <h1>Acessórios & Modas Exclusivas</h1>
-        <p>Escolha seus produtos e acompanhe a entrega no nosso grupo VIP do WhatsApp.</p>
-    </section>
-
-    <section class="filters">
-        <button class="filter-btn active" data-category="todos">Todos</button>
-        <button class="filter-btn" data-category="bolsas">Bolsas</button>
-        <button class="filter-btn" data-category="aneis">Anéis</button>
-        <button class="filter-btn" data-category="acessorios">Acessórios</button>
-    </section>
-
-    <main class="container">
-        <div class="product-grid" id="product-grid"></div>
-    </main>
-
-    <div class="cart-modal" id="cart-modal">
-        <div class="cart-content">
-            <div class="cart-header">
-                <h3>Seu Carrinho</h3>
-                <span class="close-modal" id="close-cart">&times;</span>
-            </div>
-            <div class="cart-body" id="cart-items"></div>
-            <div class="cart-footer">
-                <div class="total-price">
-                    <span>Total:</span>
-                    <strong id="cart-total">0.00 MT</strong>
-                </div>
-                <button class="checkout-btn" id="checkout-btn">
-                    <i class="fab fa-whatsapp"></i> Finalizar Pedido no WhatsApp
-                </button>
-                <a href="https://chat.whatsapp.com/SEU_LINK_DO_GRUPO" target="_blank" class="group-link-footer">
-                    Entrar no grupo de informações de entregas
-                </a>
+    <main id="tab-produtos" class="tab-content active">
+        <div class="banner-container">
+            <div class="banner-card">
+                <h1>Bolsas & Acessórios de Luxo</h1>
+                <p>Qualidade, elegância e entregas rápidas</p>
             </div>
         </div>
-    </div>
+
+        <div class="quick-actions">
+            <a href="https://wa.me/258840000000" target="_blank" class="action-btn">
+                <i class="fab fa-whatsapp"></i>
+                <span>Atendimento</span>
+            </a>
+            <a href="#" class="action-btn">
+                <i class="fas fa-truck"></i>
+                <span>Entregas</span>
+            </a>
+            <a href="#" class="action-btn">
+                <i class="fas fa-star"></i>
+                <span>Grupo VIP</span>
+            </a>
+        </div>
+
+        <section class="products-grid" id="products-grid"></section>
+    </main>
+
+    <main id="tab-pedidos" class="tab-content">
+        <header class="sub-header">
+            <h3>Meus Pedidos</h3>
+        </header>
+        <div class="orders-list">
+            <p class="empty-msg">Nenhum pedido realizado ainda.</p>
+        </div>
+    </main>
+
+    <main id="tab-conta" class="tab-content">
+        <header class="sub-header">
+            <h3>Minha Conta</h3>
+        </header>
+        <div class="user-menu">
+            <div class="menu-item"><i class="fas fa-headset"></i> Atendimento ao Cliente</div>
+            <div class="menu-item"><i class="fas fa-shield-alt"></i> Políticas da Loja</div>
+            <div class="menu-item"><i class="fas fa-info-circle"></i> Sobre Nós</div>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <button class="nav-btn active" onclick="switchTab('produtos', this)">
+            <i class="fas fa-store"></i>
+            <span>Produtos</span>
+        </button>
+        <button class="nav-btn" onclick="switchTab('pedidos', this)">
+            <i class="fas fa-shopping-bag"></i>
+            <span>Meus Pedidos</span>
+        </button>
+        <button class="nav-btn" onclick="switchTab('conta', this)">
+            <i class="fas fa-user"></i>
+            <span>Minha Conta</span>
+        </button>
+    </nav>
 
     <script src="products.js"></script>
     <script src="app.js"></script>
