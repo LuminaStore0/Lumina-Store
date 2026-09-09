@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Loja Virtual</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">
+            <h2>Loja Virtual</h2>
+        </div>
+        <div class="header-actions">
+            <a href="https://chat.whatsapp.com/SEU_LINK_DO_GRUPO" target="_blank" class="whatsapp-group-btn">
+                <i class="fab fa-whatsapp"></i> Grupo de Entregas
+            </a>
+            <div class="cart-icon" id="cart-btn">
+                <i class="fas fa-shopping-bag"></i>
+                <span id="cart-count">0</span>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>Acessórios & Modas Exclusivas</h1>
+        <p>Escolha seus produtos e acompanhe a entrega no nosso grupo VIP do WhatsApp.</p>
+    </section>
+
+    <section class="filters">
+        <button class="filter-btn active" data-category="todos">Todos</button>
+        <button class="filter-btn" data-category="bolsas">Bolsas</button>
+        <button class="filter-btn" data-category="aneis">Anéis</button>
+        <button class="filter-btn" data-category="acessorios">Acessórios</button>
+    </section>
+
+    <main class="container">
+        <div class="product-grid" id="product-grid"></div>
+    </main>
+
+    <div class="cart-modal" id="cart-modal">
+        <div class="cart-content">
+            <div class="cart-header">
+                <h3>Seu Carrinho</h3>
+                <span class="close-modal" id="close-cart">&times;</span>
+            </div>
+            <div class="cart-body" id="cart-items"></div>
+            <div class="cart-footer">
+                <div class="total-price">
+                    <span>Total:</span>
+                    <strong id="cart-total">0.00 MT</strong>
+                </div>
+                <button class="checkout-btn" id="checkout-btn">
+                    <i class="fab fa-whatsapp"></i> Finalizar Pedido no WhatsApp
+                </button>
+                <a href="https://chat.whatsapp.com/SEU_LINK_DO_GRUPO" target="_blank" class="group-link-footer">
+                    Entrar no grupo de informações de entregas
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="products.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
